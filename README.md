@@ -36,7 +36,7 @@ G25F/
 1. **Download** the installer: `G25F-Injector-Setup.exe`
 2. **Double-click** to install
 3. **Run** from desktop shortcut or start menu
-4. **Enjoy** professional DLL injection tool
+4. **Enjoy** DLL injection tool
 
 ### For Developers
 1. **Clone** the repository
