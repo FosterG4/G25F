@@ -63,6 +63,56 @@ body {
     gap: 1rem;
 }
 
+.auto-refresh-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.status-indicator {
+    font-size: 0.75rem;
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+    transition: all 0.3s ease;
+}
+
+.status-indicator.active {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4caf50;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.form-select-small {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    color: #e0e6ed;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    min-width: 60px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-select-small:focus {
+    outline: none;
+    border-color: #64ffda;
+    box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.2);
+}
+
+.form-select-small option {
+    background: #1a1a2e;
+    color: #e0e6ed;
+}
+
 .status {
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
@@ -182,10 +232,42 @@ body {
 /* Enhanced Log Panel */
 .log-panel {
     grid-column: 1 / -1;
-    max-height: 250px;
-    min-height: 200px;
+    min-height: 350px;
     display: flex;
     flex-direction: column;
+}
+
+.log-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-left: auto;
+}
+
+.log-filter {
+    min-width: 120px;
+    font-size: 12px;
+    padding: 4px 8px;
+}
+
+.log-stats {
+    display: flex;
+    gap: 15px;
+    padding: 8px 12px;
+    background: rgba(42, 42, 42, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    margin-bottom: 8px;
+    font-size: 12px;
+}
+
+.stat-item {
+    color: #b0bec5;
+}
+
+.stat-item span {
+    color: #4CAF50;
+    font-weight: bold;
 }
 
 .log-container {
@@ -200,7 +282,7 @@ body {
     line-height: 1.4;
     user-select: text;
     cursor: text;
-    max-height: 180px;
+    height: 280px;
     scrollbar-width: thin;
     scrollbar-color: rgba(100, 255, 218, 0.3) rgba(255, 255, 255, 0.05);
 }
@@ -216,10 +298,16 @@ body {
     transition: background-color 0.2s ease;
     word-wrap: break-word;
     overflow-wrap: break-word;
+    border-left: 3px solid transparent;
+    padding-left: 8px;
 }
 
 .log-entry:hover {
     background: rgba(255, 255, 255, 0.02);
+}
+
+.log-entry.log-injection {
+    border-left-color: #2196F3;
 }
 
 .log-container::selection,
@@ -293,6 +381,30 @@ body {
 .log-trace .log-message { 
     color: #607d8b; 
     font-size: 0.7rem;
+}
+
+.log-injection .log-message {
+    color: #2196F3;
+}
+
+/* Log entry details for injection history */
+.log-details {
+    font-size: 11px;
+    color: #999;
+    margin-top: 2px;
+    padding-left: 16px;
+}
+
+.log-process {
+    color: #FFB74D;
+}
+
+.log-dll {
+    color: #81C784;
+}
+
+.log-method {
+    color: #64B5F6;
 }
 
 /* Advanced Settings Panel */
@@ -795,6 +907,87 @@ body {
 
 .status-indicator i {
     font-size: 1.1em;
+}
+
+/* Enhanced Process filtering styles */
+.filter-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-options {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e6ed;
+    cursor: pointer;
+}
+
+.filter-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.filter-btn.active {
+    background: #64ffda;
+    border-color: #64ffda;
+    color: #000;
+}
+
+.filter-btn i {
+    font-size: 11px;
+}
+
+.filter-stats {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #b0bec5;
+}
+
+.stats-text {
+    font-style: italic;
+}
+
+/* Enhanced Process selection styles */
+.process-selection {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.process-actions {
+    display: flex;
+    gap: 6px;
+}
+
+/* Favorite star styles */
+.fas.fa-star {
+    color: #ffc107;
+}
+
+.fas.fa-star-o {
+    color: #dee2e6;
+}
+
+.process-favorite {
+    position: relative;
+}
+
+.process-favorite::before {
+    content: '★';
+    color: #ffc107;
+    font-size: 12px;
+    margin-right: 4px;
 }
 
 .process-filter {

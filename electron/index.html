@@ -20,6 +20,19 @@
                     <h1 class="app-title">G25F DLL Injector</h1>
                 </div>
                 <div class="header-actions">
+                    <div class="auto-refresh-controls">
+                        <span id="auto-refresh-status" class="status-indicator">Auto-refresh: OFF</span>
+                        <select id="auto-refresh-rate" class="form-select-small">
+                            <option value="3">3s</option>
+                            <option value="5" selected>5s</option>
+                            <option value="10">10s</option>
+                            <option value="15">15s</option>
+                            <option value="30">30s</option>
+                        </select>
+                        <button class="btn btn-success btn-small" id="auto-refresh-toggle">
+                            <i class="fas fa-play"></i> Start Auto-Refresh
+                        </button>
+                    </div>
                     <button class="btn btn-secondary" id="refreshBtn">
                         <i class="fas fa-sync-alt"></i>
                         Refresh
@@ -45,15 +58,41 @@
                     <div class="panel-content">
                         <div class="form-group">
                             <label for="process-filter">Filter processes:</label>
-                            <input type="text" id="process-filter" class="form-input" placeholder="Type to filter processes (e.g., notepad, chrome, game.exe)">
+                            <div class="filter-controls">
+                                <input type="text" id="process-filter" class="form-input" placeholder="Type to filter processes (e.g., notepad, chrome, game.exe)">
+                                <div class="filter-options">
+                                    <button class="btn btn-small filter-btn" id="filter-favorites" title="Show favorites only">
+                                        <i class="fas fa-star"></i>
+                                    </button>
+                                    <button class="btn btn-small filter-btn" id="filter-x64" title="Show 64-bit processes only">
+                                        64-bit
+                                    </button>
+                                    <button class="btn btn-small filter-btn" id="filter-x86" title="Show 32-bit processes only">
+                                        32-bit
+                                    </button>
+                                    <button class="btn btn-small filter-btn" id="clear-filters" title="Clear all filters">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="filter-stats" id="filter-stats">
+                                <span class="stats-text">Showing all processes</span>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="process-select">Select Process:</label>
-                            <div class="select-wrapper">
-                                <select id="process-select" class="form-select">
-                                    <option value="">Loading processes...</option>
-                                </select>
-                                <i class="fas fa-chevron-down select-arrow"></i>
+                            <div class="process-selection">
+                                <div class="select-wrapper">
+                                    <select id="process-select" class="form-select">
+                                        <option value="">Loading processes...</option>
+                                    </select>
+                                    <i class="fas fa-chevron-down select-arrow"></i>
+                                </div>
+                                <div class="process-actions">
+                                    <button class="btn btn-small" id="add-favorite" title="Add to favorites" disabled>
+                                        <i class="fas fa-star-o"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="process-info" id="processInfo">
@@ -64,6 +103,10 @@
                             <div class="info-item">
                                 <span class="info-label">Architecture:</span>
                                 <span class="info-value" id="processArch">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Path:</span>
+                                <span class="info-value" id="processPath">-</span>
                             </div>
                         </div>
                     </div>
@@ -286,6 +329,42 @@
                         </div>
                         
                         <div class="form-group compact">
+                            <label>Advanced Stealth Options:</label>
+                            <div class="checkbox-group compact">
+                                <label>
+                                    <input type="checkbox" id="use-random-delays" class="checkbox-input">
+                                    <span class="checkbox-custom"></span>
+                                    Use Random Delays
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="obfuscate-strings" class="checkbox-input">
+                                    <span class="checkbox-custom"></span>
+                                    Obfuscate Strings
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="use-indirect-calls" class="checkbox-input">
+                                    <span class="checkbox-custom"></span>
+                                    Use Indirect Calls
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="cycle-memory-protection" class="checkbox-input">
+                                    <span class="checkbox-custom"></span>
+                                    Cycle Memory Protection
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="use-custom-memory-patterns" class="checkbox-input">
+                                    <span class="checkbox-custom"></span>
+                                    Use Custom Memory Patterns
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="bypass-module-enumeration" class="checkbox-input">
+                                    <span class="checkbox-custom"></span>
+                                    Bypass Module Enumeration
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group compact">
                             <label for="startup-command">Process Startup Command Line:</label>
                             <input type="text" id="startup-command" class="form-input compact" placeholder="Optional command line arguments">
                             <small class="form-help">Arguments to pass when starting the target process</small>
@@ -312,17 +391,41 @@
                 </div>
             </div>
 
-            <!-- Log Panel -->
+            <!-- Enhanced Log Panel with History -->
             <div class="panel log-panel">
                 <div class="panel-header">
                     <i class="fas fa-terminal"></i>
-                    <h2>Activity Log</h2>
-                    <button class="btn btn-secondary btn-small" id="clearLogBtn">
-                        <i class="fas fa-trash"></i>
-                        Clear
-                    </button>
+                    <h2>Activity Log & Injection History</h2>
+                    <div class="log-controls">
+                        <select id="logFilterSelect" class="select-input log-filter">
+                            <option value="all">All Logs</option>
+                            <option value="injection">Injection Only</option>
+                            <option value="success">Success Only</option>
+                            <option value="error">Errors Only</option>
+                            <option value="warning">Warnings Only</option>
+                            <option value="info">Info Only</option>
+                        </select>
+                        <button class="btn btn-secondary btn-small" id="exportLogsBtn" title="Export logs to file">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                        <button class="btn btn-secondary btn-small" id="refreshLogsBtn" title="Refresh logs from backend">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                        <button class="btn btn-secondary btn-small" id="clearLogBtn">
+                            <i class="fas fa-trash"></i>
+                            Clear
+                        </button>
+                    </div>
                 </div>
                 <div class="panel-content">
+                    <div class="log-stats" id="logStats">
+                        <span class="stat-item">Total: <span id="totalLogs">0</span></span>
+                        <span class="stat-item">Injections: <span id="injectionLogs">0</span></span>
+                        <span class="stat-item">Success: <span id="successLogs">0</span></span>
+                        <span class="stat-item">Errors: <span id="errorLogs">0</span></span>
+                    </div>
                     <div class="log-container" id="logContainer">
                         <div class="log-entry log-info">
                             <span class="log-time">[00:00:00]</span>

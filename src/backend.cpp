@@ -318,6 +318,17 @@ private:
     std::string processHttpRequest(const std::string& request, SOCKET clientSocket) {
         std::string response;
         
+        // Handle CORS preflight requests (OPTIONS)
+        if (request.rfind("OPTIONS ", 0) == 0) {
+            response = "HTTP/1.1 204 No Content\r\n";
+            response += "Access-Control-Allow-Origin: *\r\n";
+            response += "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n";
+            response += "Access-Control-Allow-Headers: Content-Type\r\n";
+            response += "Access-Control-Max-Age: 86400\r\n"; // cache preflight for 24h
+            response += "\r\n";
+            return response;
+        }
+        
         if (request.find("GET /api/events") != std::string::npos) {
             // Server-Sent Events endpoint
             response = setupSSEConnection(clientSocket);
@@ -327,6 +338,8 @@ private:
             response = handleInjectionRequest(request);
         } else if (request.find("GET /api/status") != std::string::npos) {
             response = getServerStatus();
+        } else if (request.find("GET /health") != std::string::npos) {
+            response = getHealthCheck();
         } else if (request.find("GET /api/logs") != std::string::npos) {
             response = getRecentLogs();
         } else if (request.find("GET /") != std::string::npos) {
@@ -408,21 +421,183 @@ private:
     }
     
     std::string handleInjectionRequest(const std::string& request) {
-        // Parse injection request from POST data
-        // This is a simplified version - in production, you'd parse JSON properly
-        
         logger.logInfo("Injection request received via HTTP", "Processing injection request");
         
-        // Broadcast injection start
-        broadcastInjectionStart("Unknown Process", "Unknown DLL");
-        
-        std::string response = "HTTP/1.1 200 OK\r\n";
-        response += "Content-Type: application/json\r\n";
-        response += "Access-Control-Allow-Origin: *\r\n";
-        response += "\r\n";
-        response += "{\"status\": \"success\", \"message\": \"Injection request received\"}";
-        
-        return response;
+        try {
+            // Extract JSON body from HTTP POST request
+            size_t bodyStart = request.find("\r\n\r\n");
+            if (bodyStart == std::string::npos) {
+                logger.logError("Invalid HTTP request", "No body found");
+                return "HTTP/1.1 400 Bad Request\r\nContent-Type: application/json\r\nAccess-Control-Allow-Origin: *\r\n\r\n{\"status\": \"error\", \"message\": \"No request body\"}";
+            }
+            
+            std::string jsonBody = request.substr(bodyStart + 4);
+            if (jsonBody.empty()) {
+                logger.logError("Invalid HTTP request", "Empty body");
+                return "HTTP/1.1 400 Bad Request\r\nContent-Type: application/json\r\nAccess-Control-Allow-Origin: *\r\n\r\n{\"status\": \"error\", \"message\": \"Empty request body\"}";
+            }
+            
+            // Parse JSON
+            json injectionData = json::parse(jsonBody);
+            
+            // Extract injection parameters
+            int processId = injectionData.value("processId", 0);
+            std::vector<std::string> dllPaths = injectionData.value("dllPaths", std::vector<std::string>());
+            std::string method = injectionData.value("method", "loadlibrary");
+            
+            // Extract stealth options if present
+            StealthOptions stealthOptions = {};
+            if (injectionData.contains("stealthOptions")) {
+                json stealthJson = injectionData["stealthOptions"];
+                stealthOptions.erasePEHeader = stealthJson.value("erasePEHeader", false);
+                stealthOptions.hideModule = stealthJson.value("hideModule", false);
+                stealthOptions.useRandomDelays = stealthJson.value("useRandomDelays", false);
+                stealthOptions.obfuscateStrings = stealthJson.value("obfuscateStrings", false);
+                stealthOptions.useIndirectCalls = stealthJson.value("useIndirectCalls", false);
+                stealthOptions.cycleMemoryProtection = stealthJson.value("cycleMemoryProtection", false);
+                stealthOptions.useCustomMemoryPatterns = stealthJson.value("useCustomMemoryPatterns", false);
+                stealthOptions.bypassModuleEnumeration = stealthJson.value("bypassModuleEnumeration", false);
+                stealthOptions.injectionDelay = stealthJson.value("injectionDelay", 0);
+                stealthOptions.dllDelay = stealthJson.value("dllDelay", 500);
+            }
+            
+            if (processId == 0) {
+                logger.logError("Invalid injection request", "Missing or invalid processId");
+                return "HTTP/1.1 400 Bad Request\r\nContent-Type: application/json\r\nAccess-Control-Allow-Origin: *\r\n\r\n{\"status\": \"error\", \"message\": \"Invalid processId\"}";
+            }
+            
+            if (dllPaths.empty()) {
+                logger.logError("Invalid injection request", "No DLL paths provided");
+                return "HTTP/1.1 400 Bad Request\r\nContent-Type: application/json\r\nAccess-Control-Allow-Origin: *\r\n\r\n{\"status\": \"error\", \"message\": \"No DLL paths provided\"}";
+            }
+            
+            // Get process name for logging
+            std::string processName = "PID " + std::to_string(processId);
+            HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processId);
+            if (hProcess) {
+                char processNameBuffer[MAX_PATH];
+                DWORD size = sizeof(processNameBuffer);
+                if (QueryFullProcessImageNameA(hProcess, 0, processNameBuffer, &size)) {
+                    std::string fullPath(processNameBuffer);
+                    size_t lastSlash = fullPath.find_last_of("\\\\");
+                    if (lastSlash != std::string::npos) {
+                        processName = fullPath.substr(lastSlash + 1);
+                    }
+                }
+                CloseHandle(hProcess);
+            }
+            
+            // Log injection details
+            std::string dllList = "";
+            for (size_t i = 0; i < dllPaths.size(); ++i) {
+                if (i > 0) dllList += ", ";
+                // Extract just the filename from the full path
+                std::string dllPath = dllPaths[i];
+                size_t lastSlash = dllPath.find_last_of("\\\\");
+                if (lastSlash != std::string::npos) {
+                    dllList += dllPath.substr(lastSlash + 1);
+                } else {
+                    dllList += dllPath;
+                }
+            }
+            
+            // Broadcast injection start with actual process and DLL info
+            broadcastInjectionStart(processName, dllList);
+            
+            logger.logInfo("Injection parameters parsed", "Process: " + processName + ", DLLs: " + dllList + ", Method: " + method);
+            
+            // Convert method string to enum
+            InjectionMethod injectionMethod;
+            if (method == "loadlibrary") {
+                injectionMethod = InjectionMethod::LoadLibrary;
+            } else if (method == "createremotethread") {
+                injectionMethod = InjectionMethod::CreateRemoteThread;
+            } else if (method == "manualmap") {
+                injectionMethod = InjectionMethod::ManualMap;
+            } else if (method == "setwindowshook") {
+                injectionMethod = InjectionMethod::SetWindowsHook;
+            } else if (method == "apcinjection") {
+                injectionMethod = InjectionMethod::APCInjection;
+            } else if (method == "threadhijacking") {
+                injectionMethod = InjectionMethod::ThreadHijacking;
+            } else if (method == "vehinjection") {
+                injectionMethod = InjectionMethod::VEHInjection;
+            } else if (method == "sectionmapping") {
+                injectionMethod = InjectionMethod::SectionMapping;
+            } else {
+                logger.logError("Invalid injection method", "Method: " + method);
+                return "HTTP/1.1 400 Bad Request\r\nContent-Type: application/json\r\nAccess-Control-Allow-Origin: *\r\n\r\n{\"status\": \"error\", \"message\": \"Invalid injection method\"}";
+            }
+            
+            // Perform injection for each DLL
+            bool allSuccessful = true;
+            std::string injectionResults = "";
+            
+            for (const std::string& dllPath : dllPaths) {
+                // Convert string to wstring for Windows API
+                std::wstring wDllPath(dllPath.begin(), dllPath.end());
+                
+                logger.logInfo("Starting injection", "Process ID: " + std::to_string(processId) + ", DLL: " + dllPath);
+                
+                // Perform the actual injection with stealth options if provided
+                InjectionResult result;
+                bool hasStealthOptions = (stealthOptions.erasePEHeader || stealthOptions.hideModule || 
+                                        stealthOptions.useRandomDelays || stealthOptions.obfuscateStrings ||
+                                        stealthOptions.useIndirectCalls || stealthOptions.cycleMemoryProtection ||
+                                        stealthOptions.useCustomMemoryPatterns || stealthOptions.bypassModuleEnumeration ||
+                                        stealthOptions.injectionDelay > 0 || stealthOptions.dllDelay != 500);
+                
+                if (hasStealthOptions) {
+                    result = Injector::InjectWithStealth(processId, wDllPath, injectionMethod, stealthOptions);
+                    logger.logInjection(result, "Stealth injection performed", processName, dllPath, injectionMethod, stealthOptions);
+                } else {
+                    result = Injector::InjectDLL(processId, wDllPath, injectionMethod);
+                    StealthOptions defaultStealth = {};
+                    logger.logInjection(result, "Standard injection performed", processName, dllPath, injectionMethod, defaultStealth);
+                }
+                
+                if (result == InjectionResult::Success) {
+                    logger.logInfo("Injection successful", "Process: " + processName + ", DLL: " + dllPath);
+                    injectionResults += "Success: " + dllPath + "; ";
+                } else {
+                    allSuccessful = false;
+                    std::wstring errorMsg = Injector::GetErrorMessage(result);
+                    // Properly convert wstring to string
+                    int size = WideCharToMultiByte(CP_UTF8, 0, errorMsg.c_str(), -1, nullptr, 0, nullptr, nullptr);
+                    std::string errorMsgStr;
+                    if (size > 1) {
+                        errorMsgStr.resize(size - 1);
+                        WideCharToMultiByte(CP_UTF8, 0, errorMsg.c_str(), -1, &errorMsgStr[0], size, nullptr, nullptr);
+                    } else {
+                        errorMsgStr = "Unknown error";
+                    }
+                    logger.logError("Injection failed", "Process: " + processName + ", DLL: " + dllPath + ", Error: " + errorMsgStr);
+                    injectionResults += "Failed: " + dllPath + " (" + errorMsgStr + "); ";
+                }
+            }
+            
+            // Broadcast injection completion
+            if (allSuccessful) {
+                broadcastInjectionComplete(processName, dllList, true);
+            } else {
+                broadcastInjectionComplete(processName, dllList, false);
+            }
+            
+            std::string response = "HTTP/1.1 200 OK\r\n";
+            response += "Content-Type: application/json\r\n";
+            response += "Access-Control-Allow-Origin: *\r\n";
+            response += "\r\n";
+            response += "{\"status\": \"success\", \"message\": \"Injection request processed\"}";
+            
+            return response;
+            
+        } catch (const json::exception& e) {
+            logger.logError("JSON parsing error", e.what());
+            return "HTTP/1.1 400 Bad Request\r\nContent-Type: application/json\r\nAccess-Control-Allow-Origin: *\r\n\r\n{\"status\": \"error\", \"message\": \"Invalid JSON\"}";
+        } catch (const std::exception& e) {
+            logger.logError("Injection request error", e.what());
+            return "HTTP/1.1 500 Internal Server Error\r\nContent-Type: application/json\r\nAccess-Control-Allow-Origin: *\r\n\r\n{\"status\": \"error\", \"message\": \"Internal server error\"}";
+        }
     }
     
     std::string getServerStatus() {
@@ -439,6 +614,22 @@ private:
         response += "Access-Control-Allow-Origin: *\r\n";
         response += "\r\n";
         response += status.dump();
+        
+        return response;
+    }
+    
+    std::string getHealthCheck() {
+        json health = {
+            {"status", "ok"},
+            {"timestamp", std::chrono::duration_cast<std::chrono::seconds>(
+                std::chrono::system_clock::now().time_since_epoch()).count()}
+        };
+        
+        std::string response = "HTTP/1.1 200 OK\r\n";
+        response += "Content-Type: application/json\r\n";
+        response += "Access-Control-Allow-Origin: *\r\n";
+        response += "\r\n";
+        response += health.dump();
         
         return response;
     }
