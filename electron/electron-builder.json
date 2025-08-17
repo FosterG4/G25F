@@ -1,0 +1,42 @@
+{
+  "appId": "com.g25f.injector",
+  "productName": "G25F Injector",
+  "directories": {
+    "output": "../build/electron"
+  },
+  "files": [
+    "**/*",
+    "!node_modules/**/*"
+  ],
+  "extraResources": [
+    {
+      "from": "../build/Release/G25F_Injector_Backend.exe",
+      "to": "backend/G25F_Injector_Backend.exe"
+    }
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      },
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      }
+    ],
+    "requestedExecutionLevel": "requireAdministrator",
+    "publisherName": "G25F Team"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "G25F Injector",
+    "artifactName": "G25F-Injector-Setup.exe"
+  },
+  "portable": {
+    "artifactName": "G25F-Injector-Portable.exe"
+  }
+}

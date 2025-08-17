@@ -1,0 +1,27 @@
+{
+  "name": "g25f-injector-gui",
+  "version": "1.0.0",
+  "description": "Modern Electron GUI for G25F DLL Injector",
+  "main": "launcher.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "build:installer": "electron-builder --win nsis",
+    "build:portable": "electron-builder --win portable",
+    "build:all": "electron-builder --win",
+    "build:standalone": "electron-builder --win portable --config electron-builder.json"
+  },
+  "keywords": [
+    "dll",
+    "injector",
+    "electron",
+    "gui",
+    "windows"
+  ],
+  "author": "G25F Team",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^37.2.6",
+    "electron-builder": "^24.9.1"
+  }
+}

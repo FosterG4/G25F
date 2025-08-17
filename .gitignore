@@ -1,0 +1,329 @@
+# G25F Injector - Git Ignore File
+
+# ========================================
+# Build Outputs
+# ========================================
+build/
+bin/
+obj/
+Debug/
+Release/
+x64/
+Win32/
+*.exe
+*.dll
+*.lib
+*.obj
+*.pdb
+*.ilk
+*.exp
+*.map
+*.res
+*.rc
+*.ico
+*.bmp
+*.cur
+
+# ========================================
+# CMake Generated Files
+# ========================================
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+*.suo
+*.user
+*.aps
+*.ncb
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+
+# ========================================
+# Visual Studio Files
+# ========================================
+.vs/
+*.vcxproj.user
+*.suo
+*.user
+*.aps
+*.ncb
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+*.VC.opendb
+*.VC.db-shm
+*.VC.db-wal
+
+# ========================================
+# IDE and Editor Files
+# ========================================
+.cursor/
+.trae/
+.vscode/
+.kilocode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# ========================================
+# Node.js / Electron
+# ========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+.pnp
+.pnp.js
+*.tgz
+*.tar.gz
+
+# ========================================
+# Electron Build Outputs
+# ========================================
+dist/
+out/
+app/
+*.asar
+*.asar.unpacked
+win-unpacked/
+mac/
+linux/
+
+# ========================================
+# Dependencies (External Libraries)
+# ========================================
+external/
+# lib/
+*.lib
+*.a
+*.so
+*.dylib
+
+# ========================================
+# Logs and Temporary Files
+# ========================================
+*.log
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ========================================
+# Windows Specific
+# ========================================
+*.lnk
+*.url
+*.pif
+*.scr
+*.com
+*.bat
+*.cmd
+*.vbs
+*.js
+*.wsf
+*.msi
+*.msm
+*.msp
+*.cab
+*.dmg
+*.iso
+*.img
+
+# ========================================
+# Security and Sensitive Files
+# ========================================
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cer
+*.der
+*.p7b
+*.p7c
+*.p7m
+*.p7s
+*.p8
+*.p10
+*.p12
+*.pfx
+*.pwd
+*.pass
+*.secret
+*.token
+*.auth
+*.cred
+*.config
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ========================================
+# Test and Development Files
+# ========================================
+test/
+tests/
+testing/
+*.test
+*.spec
+coverage/
+.nyc_output/
+.coverage
+*.gcda
+*.gcno
+*.gcov
+
+# ========================================
+# Documentation Build
+# ========================================
+docs/_build/
+docs/build/
+docs/html/
+docs/latex/
+docs/man/
+docs/texinfo/
+docs/info/
+docs/ps/
+docs/pdf/
+
+# ========================================
+# Package Managers
+# ========================================
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.npmrc
+.yarnrc
+.yarnrc.yml
+
+# ========================================
+# OS Generated Files
+# ========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ========================================
+# Project Specific
+# ========================================
+# Keep the JSON dependency but ignore other external files
+!external/json/
+external/*/
+!external/json/.gitkeep
+
+# Ignore specific build artifacts
+*.injector
+*.dll
+*.so
+*.dylib
+
+# ========================================
+# Keep Important Files
+# ========================================
+!CMakeLists.txt
+!*.bat
+!*.ps1
+!*.md
+!*.txt
+!*.h
+!*.hpp
+!*.cpp
+!*.c
+!*.cc
+!*.cxx
+!*.svg
+!*.png
+!*.jpg
+!*.jpeg
+!*.gif
+!*.ico
+!*.bmp
+!*.cur
+!*.ani
+!*.cur
+!*.ico
+!*.bmp
+!*.gif
+!*.png
+!*.jpg
+!*.jpeg
+!*.tiff
+!*.tif
+!*.webp
+!*.svg
+!*.psd
+!*.ai
+!*.eps
+!*.pdf
+!*.doc
+!*.docx
+!*.xls
+!*.xlsx
+!*.ppt
+!*.pptx
+!*.odt
+!*.ods
+!*.odp
+!*.rtf
+!*.txt
+!*.md
+!*.markdown
+!*.json
+!*.xml
+!*.yaml
+!*.yml
+!*.ini
+!*.cfg
+!*.conf
+!*.config
+!*.bat
+!*.cmd
+!*.ps1
+!*.sh
+!*.bash
+!*.zsh
+!*.fish
+!*.ksh
+!*.csh
+!*.tcsh
+!*.dash
+!*.ash
+!*.mksh
+!*.yash
+!*.zsh
+!*.fish
+!*.ksh
+!*.csh
+!*.tcsh
+!*.dash
+!*.ash
+!*.mksh
+!*.yash

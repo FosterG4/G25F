@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' http://localhost:* http://127.0.0.1:*;">
+    <title>G25F DLL Injector</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.11.0/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <i class="fas fa-syringe logo-icon"></i>
+                    <h1 class="app-title">G25F DLL Injector</h1>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="content-grid">
+                <!-- Process Selection Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="header-left">
+                            <i class="fas fa-list-ul"></i>
+                            <h2>Target Process</h2>
+                        </div>
+                        <button class="btn btn-secondary btn-small" id="refresh-processes">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <div class="panel-content">
+                        <div class="form-group">
+                            <label for="process-filter">Filter processes:</label>
+                            <input type="text" id="process-filter" class="form-input" placeholder="Type to filter processes (e.g., notepad, chrome, game.exe)">
+                        </div>
+                        <div class="form-group">
+                            <label for="process-select">Select Process:</label>
+                            <div class="select-wrapper">
+                                <select id="process-select" class="form-select">
+                                    <option value="">Loading processes...</option>
+                                </select>
+                                <i class="fas fa-chevron-down select-arrow"></i>
+                            </div>
+                        </div>
+                        <div class="process-info" id="processInfo">
+                            <div class="info-item">
+                                <span class="info-label">PID:</span>
+                                <span class="info-value" id="processPid">-</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Architecture:</span>
+                                <span class="info-value" id="processArch">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DLL Selection Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <i class="fas fa-file-code"></i>
+                        <h2>DLL Files</h2>
+                        <div class="header-buttons">
+                            <button class="btn btn-secondary btn-small" id="add-dll-btn">
+                                <i class="fas fa-plus"></i>
+                                Add DLL
+                            </button>
+                            <button class="btn btn-danger btn-small" id="clear-dlls-btn">
+                                <i class="fas fa-trash"></i>
+                                Clear All
+                            </button>
+                        </div>
+                    </div>
+                    <div class="panel-content">
+                        <div class="dll-list" id="dll-list">
+                            <!-- DLL items will be added here dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Injection Method Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <i class="fas fa-cogs"></i>
+                        <h2>Injection Method</h2>
+                    </div>
+                    <div class="panel-content">
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="loadLibrary" name="injectionMethod" value="loadlibrary" checked>
+                                <label for="loadLibrary">
+                                    <span class="radio-custom"></span>
+                                    <span class="radio-text">
+                                        <strong>LoadLibrary</strong>
+                                        <small>Enhanced injection using libmem library</small>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="createRemoteThread" name="injectionMethod" value="createremotethread">
+                                <label for="createRemoteThread">
+                                    <span class="radio-custom"></span>
+                                    <span class="radio-text">
+                                        <strong>CreateRemoteThread</strong>
+                                        <small>Standard injection method</small>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="manualMap" name="injectionMethod" value="manualmap">
+                                <label for="manualMap">
+                                    <span class="radio-custom"></span>
+                                    <span class="radio-text">
+                                        <strong>Manual Map</strong>
+                                        <small>Advanced stealth injection</small>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="setWindowsHook" name="injectionMethod" value="setwindowshook">
+                                <label for="setWindowsHook">
+                                    <span class="radio-custom"></span>
+                                    <span class="radio-text">
+                                        <strong>SetWindowsHook</strong>
+                                        <small>Hook-based injection method</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inject and Wait Panel -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <i class="fas fa-clock"></i>
+                        <h2>Inject and Wait</h2>
+                        <button class="btn btn-secondary btn-small" id="save-process-btn">
+                            <i class="fas fa-save"></i>
+                            Save
+                        </button>
+                    </div>
+                    <div class="panel-content">
+                        <div class="form-group">
+                            <label for="saved-processes">Saved Process Names:</label>
+                            <div class="select-wrapper">
+                                <select id="saved-processes" class="form-select">
+                                    <option value="">Select a saved process...</option>
+                                </select>
+                                <i class="fas fa-chevron-down select-arrow"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="wait-process-name">Process Name to Wait For:</label>
+                            <div class="file-input-group">
+                                <input type="text" id="wait-process-name" class="form-input" placeholder="e.g., App, App.exe, notepad">
+                                <button class="btn btn-danger btn-small" id="delete-process-btn" style="display: none;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                            <small class="form-help">Accepts process names with or without .exe extension</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="wait-timeout">Timeout (seconds):</label>
+                            <input type="number" id="wait-timeout" class="form-input" value="60" min="1" max="3600">
+                        </div>
+                        <div class="form-group">
+                            <label for="wait-check-interval">Check Interval (ms):</label>
+                            <input type="number" id="wait-check-interval" class="form-input" value="1000" min="100" max="10000">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-secondary btn-small" id="manual-check-btn" style="display: none;">
+                                <i class="fas fa-search"></i>
+                                Manual Check Now
+                            </button>
+                        </div>
+                        <div class="wait-status" id="waitStatus" style="display: none;">
+                            <div class="status-indicator">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <span id="waitStatusText">Waiting for process...</span>
+                            </div>
+                        </div>
+                        <div class="manual-start-info" id="manualStartInfo" style="display: none;">
+                            <div class="info-box">
+                                <i class="fas fa-info-circle"></i>
+                                <div class="info-content">
+                                    <h4>Manual Start Instructions</h4>
+                                    <p>The injector is now waiting for the target process. Please start your application manually:</p>
+                                    <ol>
+                                        <li>Navigate to your application's installation directory</li>
+                                        <li>Launch the executable file</li>
+                                        <li>The injector will automatically detect and inject when the process starts</li>
+                                    </ol>
+                                    <p><strong>Target Process:</strong> <span id="targetProcessName"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions Panel -->
+                <div class="panel action-panel">
+                    <div class="panel-header">
+                        <i class="fas fa-play"></i>
+                        <h2>Actions</h2>
+                    </div>
+                    <div class="panel-content">
+                        <div class="action-buttons">
+                            <button class="btn btn-primary btn-large" id="inject-btn">
+                                <i class="fas fa-syringe"></i>
+                                Inject DLL
+                            </button>
+                            <button class="btn btn-secondary btn-large" id="inject-wait-btn">
+                                <i class="fas fa-clock"></i>
+                                Inject and Wait
+                            </button>
+                            <button class="btn btn-danger btn-large" id="stop-wait-btn" style="display: none;">
+                                <i class="fas fa-stop"></i>
+                                Stop Waiting
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Settings Panel -->
+                <div class="panel advanced-settings-panel">
+                    <div class="panel-header">
+                        <i class="fas fa-cog"></i>
+                        <h2>Advanced Settings</h2>
+                    </div>
+                    <div class="panel-content">
+                        <div class="form-group compact">
+                            <label>
+                                <input type="checkbox" id="stealth-injection" class="checkbox-input">
+                                <span class="checkbox-custom"></span>
+                                Stealth Injection
+                            </label>
+                            <small class="form-help">Use advanced techniques to avoid detection</small>
+                        </div>
+                        
+                        <div class="form-row compact">
+                            <div class="form-group compact">
+                                <label for="injection-delay">Injection Delay (ms):</label>
+                                <input type="number" id="injection-delay" class="form-input compact" value="0" min="0" max="10000" step="100">
+                            </div>
+                            
+                            <div class="form-group compact">
+                                <label for="dll-delay">DLL Delay (ms):</label>
+                                <input type="number" id="dll-delay" class="form-input compact" value="500" min="0" max="5000" step="100">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group compact">
+                            <label>Post Injection Options:</label>
+                            <div class="checkbox-group compact">
+                                <label>
+                                    <input type="checkbox" id="erase-pe-header" class="checkbox-input">
+                                    <span class="checkbox-custom"></span>
+                                    Erase PE Header
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="hide-module" class="checkbox-input">
+                                    <span class="checkbox-custom"></span>
+                                    Hide Module
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="eject-after-injection" class="checkbox-input">
+                                    <span class="checkbox-custom"></span>
+                                    Eject Module After Injection
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group compact">
+                            <label for="startup-command">Process Startup Command Line:</label>
+                            <input type="text" id="startup-command" class="form-input compact" placeholder="Optional command line arguments">
+                            <small class="form-help">Arguments to pass when starting the target process</small>
+                        </div>
+                        
+                        <div class="form-row compact">
+                            <div class="form-group compact">
+                                <label>
+                                    <input type="checkbox" id="close-after-injection" class="checkbox-input">
+                                    <span class="checkbox-custom"></span>
+                                    Close After Injection
+                                </label>
+                            </div>
+                            
+                            <div class="form-group compact">
+                                <label>
+                                    <input type="checkbox" id="use-existing-thread" class="checkbox-input">
+                                    <span class="checkbox-custom"></span>
+                                    Use Existing Thread
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Log Panel -->
+            <div class="panel log-panel">
+                <div class="panel-header">
+                    <i class="fas fa-terminal"></i>
+                    <h2>Activity Log</h2>
+                    <button class="btn btn-secondary btn-small" id="clearLogBtn">
+                        <i class="fas fa-trash"></i>
+                        Clear
+                    </button>
+                </div>
+                <div class="panel-content">
+                    <div class="log-container" id="logContainer">
+                        <div class="log-entry log-info">
+                            <span class="log-time">[00:00:00]</span>
+                            <span class="log-message">G25F DLL Injector initialized</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Status Bar -->
+        <footer class="status-bar">
+            <div class="status-item">
+                <i class="fas fa-circle status-indicator" id="backendStatus"></i>
+                <span id="backendStatusText">Connecting to backend...</span>
+            </div>
+            <div class="status-item">
+                <span id="versionInfo">v1.0.0</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="renderer-websocket.js"></script>
+</body>
+</html>

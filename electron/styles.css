@@ -1,0 +1,1146 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #142634 100%);
+    color: #e0e6ed;
+    overflow: hidden;
+    user-select: none;
+}
+
+/* App Container */
+.app-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.app-header {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.75rem 1rem;
+    -webkit-app-region: drag;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo-icon {
+    font-size: 1.2rem;
+    color: #64ffda;
+    text-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+}
+
+.app-title {
+    font-size: 1rem;
+    font-weight: 600;
+    background: linear-gradient(45deg, #64ffda, #bb86fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.header-actions {
+    -webkit-app-region: no-drag;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status.connected {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4caf50;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.status.disconnected {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 1.5rem;
+    min-height: 100%;
+}
+
+/* Panels */
+.panel {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    overflow: visible;
+    transition: all 0.3s ease;
+}
+
+.panel:hover {
+    border-color: rgba(100, 255, 218, 0.3);
+    box-shadow: 0 8px 32px rgba(100, 255, 218, 0.1);
+}
+
+.panel-header {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.panel-header .header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.panel-header i {
+    color: #64ffda;
+    font-size: 0.9rem;
+}
+
+.panel-header h2 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #e0e0e0;
+}
+
+.panel-content {
+    padding: 1rem;
+}
+
+/* Action Panel */
+.action-panel {
+    grid-column: span 1;
+    grid-row: span 1;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.advanced-settings-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1rem;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #64ffda;
+    margin-bottom: 1rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+/* Enhanced Log Panel */
+.log-panel {
+    grid-column: 1 / -1;
+    max-height: 250px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+}
+
+.log-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 6px;
+    padding: 0.75rem;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    user-select: text;
+    cursor: text;
+    max-height: 180px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(100, 255, 218, 0.3) rgba(255, 255, 255, 0.05);
+}
+
+.log-entry {
+    margin-bottom: 0.4rem;
+    display: flex;
+    gap: 0.75rem;
+    user-select: text;
+    cursor: text;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.log-entry:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.log-container::selection,
+.log-entry::selection,
+.log-time::selection,
+.log-message::selection {
+    background: rgba(100, 255, 218, 0.3);
+    color: #ffffff;
+}
+
+.log-time {
+    color: #64ffda;
+    font-weight: 500;
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+.log-message {
+    color: #e0e6ed;
+    flex: 1;
+    word-break: break-word;
+}
+
+/* Enhanced color coding for different log types */
+.log-info {
+    border-left: 3px solid #64ffda;
+}
+.log-info .log-message { 
+    color: #64ffda; 
+}
+
+.log-success {
+    border-left: 3px solid #4caf50;
+    background: rgba(76, 175, 80, 0.05);
+}
+.log-success .log-message { 
+    color: #4caf50; 
+    font-weight: 500;
+}
+
+.log-warning {
+    border-left: 3px solid #ff9800;
+    background: rgba(255, 152, 0, 0.05);
+}
+.log-warning .log-message { 
+    color: #ff9800; 
+    font-weight: 500;
+}
+
+.log-error {
+    border-left: 3px solid #f44336;
+    background: rgba(244, 67, 54, 0.05);
+}
+.log-error .log-message { 
+    color: #f44336; 
+    font-weight: 600;
+}
+
+.log-debug {
+    border-left: 3px solid #9c27b0;
+    background: rgba(156, 39, 176, 0.05);
+}
+.log-debug .log-message { 
+    color: #9c27b0; 
+}
+
+.log-trace {
+    border-left: 3px solid #607d8b;
+    background: rgba(96, 125, 139, 0.05);
+}
+.log-trace .log-message { 
+    color: #607d8b; 
+    font-size: 0.7rem;
+}
+
+/* Advanced Settings Panel */
+.advanced-settings-panel {
+    grid-column: span 1;
+    grid-row: span 1;
+}
+
+/* Compact styling for advanced settings */
+.advanced-settings-panel .panel-header h2 {
+    font-size: 1rem;
+}
+
+.advanced-settings-panel .form-group.compact {
+    margin-bottom: 0.6rem;
+}
+
+.advanced-settings-panel .form-group.compact label {
+    font-size: 0.7rem;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.advanced-settings-panel .form-input.compact {
+    padding: 0.35rem 0.4rem;
+    font-size: 0.7rem;
+    height: auto;
+}
+
+.advanced-settings-panel .form-row.compact {
+    gap: 0.5rem;
+}
+
+.advanced-settings-panel .checkbox-group.compact {
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.advanced-settings-panel .checkbox-group.compact label {
+    font-size: 0.65rem;
+    padding: 0.15rem 0;
+}
+
+.advanced-settings-panel .form-help {
+    font-size: 0.6rem;
+    margin-top: 0.15rem;
+}
+
+.advanced-settings-panel .checkbox-custom {
+    width: 14px;
+    height: 14px;
+    margin-right: 0.35rem;
+}
+
+.advanced-settings-panel .checkbox-input:checked + .checkbox-custom::after {
+    left: 3px;
+    top: 1px;
+    width: 3px;
+    height: 6px;
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+    color: #e0e0e0;
+    font-size: 0.8rem;
+}
+
+.form-help {
+    display: block;
+    font-size: 0.7rem;
+    color: #b0bec5;
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
+/* Enhanced Checkbox Styles */
+.checkbox-input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.checkbox-custom {
+    position: relative;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-color: #2a2a2a;
+    border: 2px solid #555;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+}
+
+.checkbox-custom::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid #00ff00;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.checkbox-input:checked + .checkbox-custom {
+    background-color: #1a4a1a;
+    border-color: #00ff00;
+}
+
+.checkbox-input:checked + .checkbox-custom::after {
+    opacity: 1;
+}
+
+.checkbox-input:hover + .checkbox-custom {
+    border-color: rgba(100, 255, 218, 0.5);
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 0.25rem 0;
+}
+
+/* Enhanced button states */
+.btn-inject-normal {
+    background: linear-gradient(135deg, #00ff00, #00cc00);
+    color: #000;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-inject-normal:hover {
+    background: linear-gradient(135deg, #00cc00, #009900);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 255, 0, 0.3);
+}
+
+.btn-waiting {
+    background: linear-gradient(135deg, #ff6600, #cc5500);
+    color: #fff;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-waiting::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 2s infinite;
+}
+
+/* Cancellable waiting state - shows red on hover */
+.btn-waiting.cancellable:hover {
+    background: linear-gradient(135deg, #ff4444, #cc3333);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255, 68, 68, 0.4);
+}
+
+.btn-waiting.cancellable:hover::before {
+    animation: none;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #00ff00, #00cc00);
+    color: #000;
+    border: none;
+}
+
+.btn-error {
+    background: linear-gradient(135deg, #ff4444, #cc3333);
+    color: #fff;
+    border: none;
+}
+
+.btn-active {
+    background: linear-gradient(135deg, #0099ff, #0077cc);
+    color: #fff;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 153, 255, 0.3);
+}
+
+.form-input, .form-select {
+    width: 100%;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.form-select option {
+    background: #1a1a1a;
+    color: #ffffff;
+}
+
+.form-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 3rem; /* Make room for custom arrow */
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: #64ffda;
+    box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.2);
+}
+
+/* Process Select Specific Styling */
+#process-select {
+    height: 35px;
+    overflow-y: auto;
+}
+
+#process-select option {
+    padding: 0.3rem;
+    font-size: 0.75rem;
+}
+
+.select-wrapper {
+    position: relative;
+}
+
+.select-arrow {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #64ffda;
+    pointer-events: none;
+}
+
+.file-input-group {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.file-input-group .form-input {
+    flex: 1;
+}
+
+/* Info Sections */
+.process-info, .dll-info {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.info-item:last-child {
+    margin-bottom: 0;
+}
+
+.info-label {
+    color: #b0bec5;
+    font-size: 0.875rem;
+}
+
+.info-value {
+    color: #64ffda;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+/* Radio Groups */
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.radio-item {
+    position: relative;
+}
+
+.radio-item input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.radio-item label {
+    display: flex;
+    align-items: flex-start;
+    cursor: pointer;
+    padding: 0.6rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    gap: 0.5rem;
+}
+
+.radio-item label:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(100, 255, 218, 0.3);
+}
+
+.radio-item input[type="radio"]:checked + label {
+    background: rgba(100, 255, 218, 0.1);
+    border-color: #64ffda;
+}
+
+.radio-custom {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.3s ease;
+}
+
+.radio-item input[type="radio"]:checked + label .radio-custom {
+    border-color: #64ffda;
+}
+
+.radio-item input[type="radio"]:checked + label .radio-custom::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px;
+    height: 6px;
+    background: #64ffda;
+    border-radius: 50%;
+}
+
+.radio-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.radio-text strong {
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.radio-text small {
+    color: #b0bec5;
+    font-size: 0.7rem;
+    line-height: 1.2;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    -webkit-app-region: no-drag;
+    position: relative;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+/* Specific styling for advanced settings toggle */
+#advanced-settings-toggle {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    z-index: 100 !important;
+    position: relative !important;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+
+
+/* Save button feedback */
+.btn-save-success {
+    background: linear-gradient(45deg, #4caf50, #66bb6a) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #64ffda, #00bcd4);
+    color: #000000;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: linear-gradient(45deg, #4fd3b8, #0097a7);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(100, 255, 218, 0.3);
+}
+
+.btn-success {
+    background: linear-gradient(45deg, #4caf50, #66bb6a);
+    color: #ffffff;
+}
+
+.btn-success:hover:not(:disabled) {
+    background: linear-gradient(45deg, #388e3c, #4caf50);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-large {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.btn-small {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+    min-height: auto;
+}
+
+.wait-status {
+    margin-top: 15px;
+    padding: 15px;
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #ffc107;
+}
+
+.status-indicator i {
+    font-size: 1.1em;
+}
+
+.process-filter {
+    margin-bottom: 15px;
+}
+
+.action-panel .panel-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.form-input[type="number"]::-webkit-outer-spin-button,
+.form-input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Progress */
+.progress-container {
+    margin-top: 1rem;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #64ffda, #18ffff);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.progress-text {
+    font-size: 0.875rem;
+    color: #64ffda;
+    text-align: center;
+    display: block;
+}
+
+/* Status Bar */
+.status-bar {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-indicator {
+    font-size: 0.5rem;
+}
+
+.status-indicator.online { color: #4caf50; }
+.status-indicator.offline { color: #f44336; }
+.status-indicator.connecting { color: #ff9800; }
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(100, 255, 218, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 255, 218, 0.5);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.panel {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* DLL List Styles */
+.dll-list {
+    max-height: 280px;
+    overflow-y: auto;
+    margin-bottom: 0.5rem;
+}
+
+.dll-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.dll-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(100, 255, 218, 0.3);
+}
+
+.dll-item:last-child {
+    margin-bottom: 0;
+}
+
+.dll-checkbox {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+}
+
+.dll-checkbox input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    margin: 0;
+    top: 0;
+    left: 0;
+}
+
+.dll-checkbox-custom {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    background-color: #2a2a2a;
+    border: 2px solid #555;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.dll-checkbox input[type="checkbox"]:checked + .dll-checkbox-custom {
+    background-color: #1a4a1a;
+    border-color: #00ff00;
+}
+
+.dll-checkbox input[type="checkbox"]:checked + .dll-checkbox-custom::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid #00ff00;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    opacity: 1;
+}
+
+.dll-checkbox input[type="checkbox"]:hover + .dll-checkbox-custom {
+    border-color: rgba(100, 255, 218, 0.5);
+}
+
+.dll-info-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.dll-path {
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 500;
+    word-break: break-all;
+}
+
+.dll-details {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.7rem;
+    color: #b0bec5;
+}
+
+.dll-remove {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dll-remove:hover {
+    background: rgba(244, 67, 54, 0.3);
+    border-color: rgba(244, 67, 54, 0.5);
+}
+
+/* Header Buttons */
+.header-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.header-buttons .btn {
+    font-size: 12px;
+    padding: 6px 12px;
+    min-width: auto;
+}
+
+
+
+/* Manual Start Info Box */
+.manual-start-info {
+    margin-top: 1rem;
+}
+
+.info-box {
+    background: rgba(100, 255, 218, 0.1);
+    border: 1px solid rgba(100, 255, 218, 0.3);
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.info-box i {
+    color: #64ffda;
+    font-size: 1.25rem;
+    margin-top: 0.25rem;
+    flex-shrink: 0;
+}
+
+.info-content {
+    flex: 1;
+}
+
+.info-content h4 {
+    color: #64ffda;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.info-content p {
+    color: #e0e6ed;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+}
+
+.info-content p:last-child {
+    margin-bottom: 0;
+}
+
+.info-content ol {
+    color: #e0e6ed;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-left: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.info-content ol li {
+    margin-bottom: 0.25rem;
+}
+
+/* Danger Button */
+.btn-danger {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: rgba(244, 67, 54, 0.3);
+    border-color: rgba(244, 67, 54, 0.5);
+    transform: translateY(-1px);
+}
+
+/* Empty State */
+.dll-list-empty {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #b0bec5;
+    font-size: 0.875rem;
+}
+
+.dll-list-empty i {
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.2);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-panel,
+    .log-panel {
+        grid-column: span 1;
+    }
+    
+    .dll-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .dll-details {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+}
