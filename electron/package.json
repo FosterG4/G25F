@@ -21,7 +21,7 @@
   "author": "G25F Team",
   "license": "MIT",
   "dependencies": {
-    "axios": "^1.11.0"
+    "axios": "^1.12.0"
   },
   "devDependencies": {
     "electron": "^37.2.6",
